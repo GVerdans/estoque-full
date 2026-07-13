@@ -1,11 +1,7 @@
-import express, { type Express, type Request, type Response } from 'express';
+import express, { type Express, type Request, type Response } from "express";
+import router from "./routes/index.routes";
 
 const app: Express = express();
-
-app.use(express.json());
-
-app.get('/', (req: Request, res: Response) => {
-  res.send('Oi Mundo !');
-});
+app.use(router);
 
 export default app;

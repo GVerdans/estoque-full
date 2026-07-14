@@ -23,7 +23,7 @@ model User {
 model Produto {
       id         BigInt   @id @default(autoincrement())
       name       String
-      price      Float
+      price      Decimal
       quantidade Int
       active     Boolean  @default(true)
       createdAt  DateTime @default(now())

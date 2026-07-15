@@ -6,6 +6,16 @@ export async function findAllProdutos() {
       return data;
 }
 
+export async function findProdutoById(id: string) {
+      const data = await prisma.produto.findUnique({
+            where: {
+                  id,
+            },
+      });
+
+      return data;
+}
+
 export async function cadastraProd(
       name: string,
       price: number | Prisma.Decimal,

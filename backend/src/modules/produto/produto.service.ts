@@ -37,3 +37,17 @@ export async function desativaProd(id: string) {
 
       return updatedProd.count > 0;
 }
+
+export async function ativaProd(id: string) {
+      const updatedProd = await prisma.produto.updateMany({
+            where: {
+                  id: id,
+                  active: false,
+            },
+            data: {
+                  active: true,
+            },
+      });
+
+      return updatedProd.count > 0;
+}

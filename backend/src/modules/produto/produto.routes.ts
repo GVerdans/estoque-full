@@ -3,12 +3,14 @@ import {
       getProdutosController,
       postProdutosController,
       desativaProdutosController,
+      ativaProdutosController,
 } from "./produto.controller";
 
 const router = Router();
 
 router.get("/", getProdutosController);
 router.post("/cadastro", postProdutosController);
-router.put("/produto/:id", desativaProdutosController);
+router.put("/desativa/:id", desativaProdutosController);
+router.put("/ativa/:id", ativaProdutosController);
 
 export default router;

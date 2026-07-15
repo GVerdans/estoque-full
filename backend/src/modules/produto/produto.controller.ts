@@ -1,5 +1,10 @@
 import { resolveSoa } from "node:dns";
-import { findAllProdutos, cadastraProd, desativaProd } from "./produto.service";
+import {
+      findAllProdutos,
+      cadastraProd,
+      desativaProd,
+      ativaProd,
+} from "./produto.service";
 import { Request, Response } from "express";
 
 export async function getProdutosController(req: Request, res: Response) {
@@ -81,6 +86,35 @@ export async function desativaProdutosController(req: Request, res: Response) {
       } catch (err) {
             return res.status(500).json({
                   error: "Erro interno ao desativar produto !",
+            });
+      }
+}
+export async function ativaProdutosController(req: Request, res: Response) {
+      try {
+            const id = req.params.id;
+
+            if (typeof id !== "string" || id.trim() === "") {
+                  return res.status(400).json({
+                        error: {
+                              message: "ID inválido !",
+                        },
+                  });
+            }
+
+            const foiAtivado = await ativaProd(id);
+
+            if (!foiAtivado) {
+                  return res.status(404).json({
+                        error: "Produto não foi encontrado ou ja se encontra ativo !",
+                  });
+            }
+
+            return res.status(200).json({
+                  message: "Produto ativo com sucesso !",
+            });
+      } catch (err) {
+            return res.status(500).json({
+                  error: "Erro interno ao ativar produto !",
             });
       }
 }

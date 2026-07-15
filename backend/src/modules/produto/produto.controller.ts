@@ -14,9 +14,11 @@ export async function getProdutosController(req: Request, res: Response) {
             }
 
             const sanitazedProdutos = data.map((prod) => ({
+                  id: prod.id,
                   nome: prod.name,
                   quantidade: prod.quantidade,
                   preco: prod.price,
+                  ativo: prod.active,
                   register_by: prod.userId,
             }));
 

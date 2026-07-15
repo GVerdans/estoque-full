@@ -2,8 +2,7 @@ import { resolveSoa } from "node:dns";
 import {
       findAllProdutos,
       cadastraProd,
-      desativaProd,
-      ativaProd,
+      updateStatusProd,
       getDashboard,
 } from "./produto.service";
 import { Request, Response } from "express";
@@ -61,61 +60,23 @@ export async function postProdutosController(req: Request, res: Response) {
       }
 }
 
-export async function desativaProdutosController(req: Request, res: Response) {
+export async function updateStatusProdController(req: Request, res: Response) {
       try {
-            const id = req.params.id;
-
-            if (typeof id !== "string" || id.trim() === "") {
+            const { id } = req.params;
+            if (typeof id !== "string" || id.trim() == "") {
                   return res.status(400).json({
-                        error: {
-                              message: "ID inválido !",
-                        },
+                        error: "Algum dos dados não foi preenchido corretamente !",
                   });
             }
 
-            const foiDesativado = await desativaProd(id);
-
-            if (!foiDesativado) {
-                  return res.status(404).json({
-                        error: "Produto não foi encontrado ou ja se encontra inativo !",
-                  });
-            }
+            const prodAtt = await updateStatusProd(id);
 
             return res.status(200).json({
-                  message: "Produto desativado com sucesso !",
+                  message: "Status Alterado com Sucesso !",
             });
       } catch (err) {
-            return res.status(500).json({
-                  error: "Erro interno ao desativar produto !",
-            });
-      }
-}
-export async function ativaProdutosController(req: Request, res: Response) {
-      try {
-            const id = req.params.id;
-
-            if (typeof id !== "string" || id.trim() === "") {
-                  return res.status(400).json({
-                        error: {
-                              message: "ID inválido !",
-                        },
-                  });
-            }
-
-            const foiAtivado = await ativaProd(id);
-
-            if (!foiAtivado) {
-                  return res.status(404).json({
-                        error: "Produto não foi encontrado ou ja se encontra ativo !",
-                  });
-            }
-
-            return res.status(200).json({
-                  message: "Produto ativo com sucesso !",
-            });
-      } catch (err) {
-            return res.status(500).json({
-                  error: "Erro interno ao ativar produto !",
+            res.json(400).json({
+                  message: "Erro ao alterar status !",
             });
       }
 }

@@ -24,28 +24,23 @@ export async function cadastraProd(
       return novoProd;
 }
 
-export async function desativaProd(id: string) {
-      const updatedProd = await prisma.produto.updateMany({
+export async function updateStatusProd(id: string) {
+      const prod = await prisma.produto.findUnique({
             where: {
-                  id: id,
-                  active: true,
-            },
-            data: {
-                  active: false,
+                  id,
             },
       });
 
-      return updatedProd.count > 0;
-}
+      if (!prod) return false;
 
-export async function ativaProd(id: string) {
+      const novoStatus = !prod.active;
+
       const updatedProd = await prisma.produto.updateMany({
             where: {
-                  id: id,
-                  active: false,
+                  id,
             },
             data: {
-                  active: true,
+                  active: novoStatus,
             },
       });
 

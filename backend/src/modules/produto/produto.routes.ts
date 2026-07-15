@@ -2,15 +2,13 @@ import { Router } from "express";
 import {
       getProdutosController,
       postProdutosController,
-      desativaProdutosController,
-      ativaProdutosController,
+      updateStatusProdController,
 } from "./produto.controller";
 
 const router = Router();
 
 router.get("/", getProdutosController);
 router.post("/cadastro", postProdutosController);
-router.put("/desativa/:id", desativaProdutosController);
-router.put("/ativa/:id", ativaProdutosController);
+router.patch("/status/:id", updateStatusProdController);
 
 export default router;

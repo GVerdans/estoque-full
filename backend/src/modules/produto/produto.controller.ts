@@ -4,6 +4,7 @@ import {
       cadastraProd,
       updateStatusProd,
       getDashboard,
+      findProdutoById,
 } from "./produto.service";
 import { Request, Response } from "express";
 
@@ -83,4 +84,22 @@ export async function updateStatusProdController(req: Request, res: Response) {
 
 export async function getDashboardController(req: Request, res: Response) {
       return await getDashboard();
+}
+
+export async function findProdutoByIdController(req: Request, res: Response) {
+      const id = req.params.id;
+      if (typeof id !== "string") {
+            return res.status(400).json({
+                  error: "Insira o ID corretamente !",
+            });
+      }
+      try {
+            const data = await findProdutoById(id);
+
+            return data;
+      } catch (err) {
+            return res.status(400).json({
+                  error: "Erro interno !",
+            });
+      }
 }

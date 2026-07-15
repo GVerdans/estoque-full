@@ -3,12 +3,15 @@ import {
       getProdutosController,
       postProdutosController,
       updateStatusProdController,
+      findProdutoByIdController,
 } from "./produto.controller";
 
 const router = Router();
 
 router.get("/", getProdutosController);
-router.post("/cadastro", postProdutosController);
-router.patch("/status/:id", updateStatusProdController);
+router.get("/:id", findProdutoByIdController);
+
+router.post("/", postProdutosController);
+router.patch("/:id/status", updateStatusProdController);
 
 export default router;

@@ -4,6 +4,7 @@ import {
       cadastraProd,
       desativaProd,
       ativaProd,
+      getDashboard,
 } from "./produto.service";
 import { Request, Response } from "express";
 
@@ -117,4 +118,8 @@ export async function ativaProdutosController(req: Request, res: Response) {
                   error: "Erro interno ao ativar produto !",
             });
       }
+}
+
+export async function getDashboardController(req: Request, res: Response) {
+      return await getDashboard();
 }

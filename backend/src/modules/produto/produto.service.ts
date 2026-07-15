@@ -51,3 +51,21 @@ export async function ativaProd(id: string) {
 
       return updatedProd.count > 0;
 }
+
+export async function getDashboard() {
+      const produtos = await prisma.produto.findMany({
+            where: {
+                  active: true,
+            },
+      });
+
+      const valorEstoque = produtos.reduce(
+            (acc, prod) => acc + prod.price.toNumber() * prod.quantidade,
+            0,
+      );
+
+      return {
+            totalProdutos: produtos.length,
+            valorEstoque,
+      };
+}

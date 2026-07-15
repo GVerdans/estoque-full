@@ -27,13 +27,19 @@ export async function findActiveProd() {
 }
 
 export async function findInactiveProd() {
-      const data = prisma.produto.findMany({
+      const data = await prisma.produto.findMany({
             where: {
                   active: false,
             },
       });
 
       return data;
+}
+
+export async function totalItens() {
+      const data = await prisma.produto.findMany();
+
+      return data.length;
 }
 
 export async function cadastraProd(

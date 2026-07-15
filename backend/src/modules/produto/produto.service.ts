@@ -16,6 +16,16 @@ export async function findProdutoById(id: string) {
       return data;
 }
 
+export async function findActiveProd() {
+      const data = await prisma.produto.findMany({
+            where: {
+                  active: true,
+            },
+      });
+
+      return data;
+}
+
 export async function cadastraProd(
       name: string,
       price: number | Prisma.Decimal,

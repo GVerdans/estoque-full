@@ -42,6 +42,16 @@ export async function totalItens() {
       return data.length;
 }
 
+export async function findByName(name: string) {
+      const data = await prisma.produto.findMany({
+            where: {
+                  name: name,
+            },
+      });
+
+      return data;
+}
+
 export async function cadastraProd(
       name: string,
       price: number | Prisma.Decimal,

@@ -21,6 +21,17 @@ export async function findActiveProd() {
             where: {
                   active: true,
             },
+            select: {
+                  id: true,
+                  name: true,
+                  price: true,
+                  quantidade: true,
+                  active: true,
+                  userId: true,
+            },
+            orderBy: {
+                  name: "asc",
+            },
       });
 
       return data;

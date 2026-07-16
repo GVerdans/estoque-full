@@ -1,10 +1,10 @@
-import { resolveSoa } from "node:dns";
 import {
       findAllProdutos,
       cadastraProd,
       updateStatusProd,
       getDashboard,
       findProdutoById,
+      findActiveProd,
 } from "./produto.service";
 import { Request, Response } from "express";
 
@@ -96,10 +96,32 @@ export async function findProdutoByIdController(req: Request, res: Response) {
       try {
             const data = await findProdutoById(id);
 
-            return data;
+            if (!data) {
+                  return res.status(404).json({
+                        error: "Produto não encontrado !",
+                  });
+            }
+
+            return res.status(200).json({ produto: data });
       } catch (err) {
             return res.status(400).json({
                   error: "Erro interno !",
+            });
+      }
+}
+
+export async function findActiveProdController(req: Request, res: Response) {
+      try {
+            const activeProd = await findActiveProd();
+            if (!activeProd || activeProd.length === 0) {
+                  return res.status(404).json({
+                        message: "Nenhum produto ativo encontrado !",
+                  });
+            }
+            return res.status(200).json({ produtosAtivos: activeProd });
+      } catch (err) {
+            return res.status(500).json({
+                  error: "Erro interno de servidor !",
             });
       }
 }

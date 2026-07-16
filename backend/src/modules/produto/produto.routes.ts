@@ -6,6 +6,7 @@ import {
       findProdutoByIdController,
       findActiveProdController,
       findInactiveProdController,
+      getDashboardController,
 } from "./produto.controller";
 
 const router = Router();
@@ -13,6 +14,7 @@ const router = Router();
 router.get("/", getProdutosController);
 router.get("/activeprods", findActiveProdController);
 router.get("/inactiveprods", findInactiveProdController);
+router.get("/dashboard", getDashboardController);
 router.get("/:id", findProdutoByIdController);
 
 router.post("/", postProdutosController);

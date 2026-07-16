@@ -84,7 +84,11 @@ export async function updateStatusProdController(req: Request, res: Response) {
 }
 
 export async function getDashboardController(req: Request, res: Response) {
-      return await getDashboard();
+      const data = await getDashboard();
+
+      return res.status(200).json({
+            data: data,
+      });
 }
 
 export async function findProdutoByIdController(req: Request, res: Response) {

@@ -58,12 +58,6 @@ export async function findInactiveProd() {
       return data;
 }
 
-export async function totalItens() {
-      const data = await prisma.produto.findMany();
-
-      return data.length;
-}
-
 export async function findByName(name: string) {
       const data = await prisma.produto.findMany({
             where: {

@@ -86,6 +86,12 @@ export async function updateStatusProdController(req: Request, res: Response) {
 export async function getDashboardController(req: Request, res: Response) {
       const data = await getDashboard();
 
+      if (!data.totalProdutos || data.totalProdutos == 0) {
+            return res.status(200).json({
+                  message: "Nenhum produto encontrado !",
+            });
+      }
+
       return res.status(200).json({
             data: data,
       });

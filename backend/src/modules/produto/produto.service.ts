@@ -126,3 +126,16 @@ export async function getDashboard() {
             valorEstoque,
       };
 }
+
+export async function findProdBaixoEstoque(min = 5) {
+      const data = await prisma.produto.findMany({
+            where: {
+                  active: true,
+                  quantidade: {
+                        lte: min,
+                  },
+            },
+      });
+
+      return data;
+}

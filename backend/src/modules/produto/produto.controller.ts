@@ -6,6 +6,7 @@ import {
       findProdutoById,
       findActiveProd,
       findInactiveProd,
+      findProdBaixoEstoque,
 } from "./produto.service";
 import { Request, Response } from "express";
 
@@ -149,5 +150,33 @@ export async function findInactiveProdController(req: Request, res: Response) {
             return res.status(200).json({
                   produtosInativos: { data },
             });
-      } catch (err) {}
+      } catch (err) {
+            return res.status(500).json({
+                  error: "Erro interno de servidor !",
+            });
+      }
+}
+
+export async function findProdBaixoEstoqueController(
+      req: Request,
+      res: Response,
+) {
+      const data = await findProdBaixoEstoque();
+      if (!data || data.length == 0) {
+            return res.status(200).json({
+                  message: "Nenhum produto com estoque mínimo (5) !",
+            });
+      }
+
+      const sanitazedData = data.map((prod) => ({
+            id: prod.id,
+            nome: prod.name,
+            quantidade: prod.quantidade,
+            preco: prod.price,
+            ativo: prod.active,
+      }));
+
+      return res.status(200).json({
+            prodEstoqueMin: sanitazedData,
+      });
 }

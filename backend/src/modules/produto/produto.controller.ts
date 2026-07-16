@@ -148,7 +148,7 @@ export async function findInactiveProdController(req: Request, res: Response) {
             }
 
             return res.status(200).json({
-                  produtosInativos: { data },
+                  produtosInativos: data,
             });
       } catch (err) {
             return res.status(500).json({

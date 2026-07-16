@@ -1,10 +1,12 @@
-import { resolveSoa } from "node:dns";
 import {
       findAllProdutos,
       cadastraProd,
       updateStatusProd,
       getDashboard,
       findProdutoById,
+      findActiveProd,
+      findInactiveProd,
+      findProdBaixoEstoque,
 } from "./produto.service";
 import { Request, Response } from "express";
 
@@ -83,7 +85,17 @@ export async function updateStatusProdController(req: Request, res: Response) {
 }
 
 export async function getDashboardController(req: Request, res: Response) {
-      return await getDashboard();
+      const data = await getDashboard();
+
+      if (!data.totalProdutos || data.totalProdutos == 0) {
+            return res.status(200).json({
+                  message: "Nenhum produto encontrado !",
+            });
+      }
+
+      return res.status(200).json({
+            data: data,
+      });
 }
 
 export async function findProdutoByIdController(req: Request, res: Response) {
@@ -96,10 +108,75 @@ export async function findProdutoByIdController(req: Request, res: Response) {
       try {
             const data = await findProdutoById(id);
 
-            return data;
+            if (!data) {
+                  return res.status(404).json({
+                        error: "Produto não encontrado !",
+                  });
+            }
+
+            return res.status(200).json({ produto: data });
       } catch (err) {
             return res.status(400).json({
                   error: "Erro interno !",
             });
       }
+}
+
+export async function findActiveProdController(req: Request, res: Response) {
+      try {
+            const activeProd = await findActiveProd();
+            if (!activeProd || activeProd.length === 0) {
+                  return res.status(404).json({
+                        message: "Nenhum produto ativo encontrado !",
+                  });
+            }
+            return res.status(200).json({ produtosAtivos: activeProd });
+      } catch (err) {
+            return res.status(500).json({
+                  error: "Erro interno de servidor !",
+            });
+      }
+}
+
+export async function findInactiveProdController(req: Request, res: Response) {
+      try {
+            const data = await findInactiveProd();
+            if (!data || data.length == 0) {
+                  return res.status(404).json({
+                        message: "Nenhum produto inativo encontrado !",
+                  });
+            }
+
+            return res.status(200).json({
+                  produtosInativos: data,
+            });
+      } catch (err) {
+            return res.status(500).json({
+                  error: "Erro interno de servidor !",
+            });
+      }
+}
+
+export async function findProdBaixoEstoqueController(
+      req: Request,
+      res: Response,
+) {
+      const data = await findProdBaixoEstoque();
+      if (!data || data.length == 0) {
+            return res.status(200).json({
+                  message: "Nenhum produto com estoque mínimo (5) !",
+            });
+      }
+
+      const sanitazedData = data.map((prod) => ({
+            id: prod.id,
+            nome: prod.name,
+            quantidade: prod.quantidade,
+            preco: prod.price,
+            ativo: prod.active,
+      }));
+
+      return res.status(200).json({
+            prodEstoqueMin: sanitazedData,
+      });
 }

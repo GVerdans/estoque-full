@@ -21,6 +21,17 @@ export async function findActiveProd() {
             where: {
                   active: true,
             },
+            select: {
+                  id: true,
+                  name: true,
+                  price: true,
+                  quantidade: true,
+                  active: true,
+                  userId: true,
+            },
+            orderBy: {
+                  name: "asc",
+            },
       });
 
       return data;
@@ -31,15 +42,20 @@ export async function findInactiveProd() {
             where: {
                   active: false,
             },
+            select: {
+                  id: true,
+                  name: true,
+                  price: true,
+                  quantidade: true,
+                  active: true,
+                  userId: true,
+            },
+            orderBy: {
+                  name: "asc",
+            },
       });
 
       return data;
-}
-
-export async function totalItens() {
-      const data = await prisma.produto.findMany();
-
-      return data.length;
 }
 
 export async function findByName(name: string) {
@@ -109,4 +125,17 @@ export async function getDashboard() {
             totalProdutos: produtos.length,
             valorEstoque,
       };
+}
+
+export async function findProdBaixoEstoque(min = 5) {
+      const data = await prisma.produto.findMany({
+            where: {
+                  active: true,
+                  quantidade: {
+                        lte: min,
+                  },
+            },
+      });
+
+      return data;
 }

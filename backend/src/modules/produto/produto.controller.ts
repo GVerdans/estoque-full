@@ -5,6 +5,7 @@ import {
       getDashboard,
       findProdutoById,
       findActiveProd,
+      findInactiveProd,
 } from "./produto.service";
 import { Request, Response } from "express";
 
@@ -124,4 +125,19 @@ export async function findActiveProdController(req: Request, res: Response) {
                   error: "Erro interno de servidor !",
             });
       }
+}
+
+export async function findInactiveProdController(req: Request, res: Response) {
+      try {
+            const data = await findInactiveProd();
+            if (!data || data.length == 0) {
+                  return res.status(404).json({
+                        message: "Nenhum produto inativo encontrado !",
+                  });
+            }
+
+            return res.status(200).json({
+                  produtosInativos: { data },
+            });
+      } catch (err) {}
 }

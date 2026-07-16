@@ -42,6 +42,17 @@ export async function findInactiveProd() {
             where: {
                   active: false,
             },
+            select: {
+                  id: true,
+                  name: true,
+                  price: true,
+                  quantidade: true,
+                  active: true,
+                  userId: true,
+            },
+            orderBy: {
+                  name: "asc",
+            },
       });
 
       return data;

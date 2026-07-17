@@ -129,9 +129,9 @@ export async function updateStatusProd(id: string) {
 
 export async function updateProd(
       id: string,
-      name: string,
-      price: number | Prisma.Decimal,
-      quantidade: number,
+      name?: string,
+      price?: number | Prisma.Decimal,
+      quantidade?: number,
 ) {
       const prod = await prisma.produto.findUnique({
             where: {
@@ -143,19 +143,25 @@ export async function updateProd(
 
       const newProd: {
             name?: string;
-            price?: number | Prisma.Decimal;
+            price?: Prisma.Decimal;
             quantidade?: number;
       } = {};
 
-      if (name !== prod?.name) {
+      if (name !== undefined && name !== prod.name) {
             newProd.name = name;
       }
 
-      if (price.toString() !== prod?.price.toString()) {
-            newProd.price = price;
+      if (price !== undefined) {
+            const newPrice =
+                  price instanceof Prisma.Decimal
+                        ? price
+                        : new Prisma.Decimal(price);
+            if (newPrice.toString() !== prod.price.toString()) {
+                  newProd.price = newPrice;
+            }
       }
 
-      if (quantidade !== prod?.quantidade) {
+      if (quantidade !== undefined && quantidade !== prod.quantidade) {
             newProd.quantidade = quantidade;
       }
 

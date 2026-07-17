@@ -8,6 +8,7 @@ import {
       findInactiveProd,
       findProdBaixoEstoque,
       findByName,
+      updateProd,
 } from "./produto.service";
 import { Request, Response } from "express";
 
@@ -194,6 +195,57 @@ export async function updateStatusProdController(req: Request, res: Response) {
                   message: "Erro ao alterar status !",
             });
       }
+}
+export async function updateProdController(req: Request, res: Response) {
+      const { id } = req.params;
+      const { name, price, quantidade } = req.body;
+
+      if (typeof id !== "string" || id.trim() === "") {
+            return res.status(400).json({
+                  message: "ID incorreto !",
+            });
+      }
+
+      if (name !== undefined && typeof name !== "string") {
+            return res.status(400).json({
+                  message: "name deve ser string !",
+            });
+      }
+
+      if (price !== undefined && typeof price !== "number") {
+            return res.status(400).json({
+                  message: "price deve ser number !",
+            });
+      }
+
+      if (quantidade !== undefined && typeof quantidade !== "number") {
+            return res.status(400).json({
+                  message: "quantidade deve ser number !",
+            });
+      }
+
+      if (
+            name === undefined &&
+            price === undefined &&
+            quantidade === undefined
+      ) {
+            return res.status(400).json({
+                  message: "Nenhum campo para atualizar !",
+            });
+      }
+
+      const data = await updateProd(id, name, price, quantidade);
+
+      if (!data) {
+            return res.status(404).json({
+                  message: "Produto não encontrado !",
+            });
+      }
+
+      return res.status(200).json({
+            message: "Dados atualizados com sucesso !",
+            data,
+      });
 }
 
 // DASHBOARD

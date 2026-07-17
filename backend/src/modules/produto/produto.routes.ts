@@ -9,6 +9,7 @@ import {
       getDashboardController,
       findProdBaixoEstoqueController,
       findByNameController,
+      updateProdController,
 } from "./produto.controller";
 
 const router = Router();
@@ -26,6 +27,7 @@ router.get("/:id", findProdutoByIdController);
 router.post("/", postProdutosController);
 
 //PATCH
+router.patch("/:id/update", updateProdController);
 router.patch("/:id/status", updateStatusProdController);
 
 export default router;

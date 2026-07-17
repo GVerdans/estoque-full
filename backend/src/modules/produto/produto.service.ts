@@ -1,6 +1,7 @@
 import { prisma } from "../../database/prisma";
 import { Prisma } from "../../generated/prisma/client";
 
+// QUERiES
 export async function findAllProdutos() {
       const data = await prisma.produto.findMany();
       return data;
@@ -10,6 +11,19 @@ export async function findProdutoById(id: string) {
       const data = await prisma.produto.findUnique({
             where: {
                   id,
+            },
+      });
+
+      return data;
+}
+
+export async function findByName(name: string) {
+      const data = await prisma.produto.findMany({
+            where: {
+                  name: {
+                        contains: name,
+                        mode: "insensitive",
+                  },
             },
       });
 
@@ -58,12 +72,12 @@ export async function findInactiveProd() {
       return data;
 }
 
-export async function findByName(name: string) {
+export async function findProdBaixoEstoque(min = 5) {
       const data = await prisma.produto.findMany({
             where: {
-                  name: {
-                        contains: name,
-                        mode: "insensitive",
+                  active: true,
+                  quantidade: {
+                        lte: min,
                   },
             },
       });
@@ -71,6 +85,7 @@ export async function findByName(name: string) {
       return data;
 }
 
+// COMANDS
 export async function cadastraProd(
       name: string,
       price: number | Prisma.Decimal,
@@ -112,6 +127,7 @@ export async function updateStatusProd(id: string) {
       return updatedProd.count > 0;
 }
 
+// DASHBOARD
 export async function getDashboard() {
       const produtos = await prisma.produto.findMany({
             where: {
@@ -128,17 +144,4 @@ export async function getDashboard() {
             totalProdutos: produtos.length,
             valorEstoque,
       };
-}
-
-export async function findProdBaixoEstoque(min = 5) {
-      const data = await prisma.produto.findMany({
-            where: {
-                  active: true,
-                  quantidade: {
-                        lte: min,
-                  },
-            },
-      });
-
-      return data;
 }

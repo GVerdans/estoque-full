@@ -7,9 +7,14 @@ import {
       findActiveProd,
       findInactiveProd,
       findProdBaixoEstoque,
+      findByName,
+      updateProd,
+      incrementStock,
+      decrementStock,
 } from "./produto.service";
 import { Request, Response } from "express";
 
+// QUERIES
 export async function getProdutosController(req: Request, res: Response) {
       try {
             const data = await findAllProdutos();
@@ -40,62 +45,6 @@ export async function getProdutosController(req: Request, res: Response) {
                   },
             });
       }
-}
-
-export async function postProdutosController(req: Request, res: Response) {
-      try {
-            const { name, price, quantidade, userId } = req.body;
-
-            if (!name || !price || !quantidade || !userId) {
-                  return res
-                        .status(400)
-                        .json({ error: "Todos os campos são obrigatórios !" });
-            }
-
-            const produto = await cadastraProd(name, price, quantidade, userId);
-
-            return res.status(201).json({
-                  message: "Produto cadastrado com sucesso !",
-                  produto: produto,
-            });
-      } catch (err) {
-            return res.status(400).json({ error: "Erro ao criar produto !" });
-      }
-}
-
-export async function updateStatusProdController(req: Request, res: Response) {
-      try {
-            const { id } = req.params;
-            if (typeof id !== "string" || id.trim() == "") {
-                  return res.status(400).json({
-                        error: "Algum dos dados não foi preenchido corretamente !",
-                  });
-            }
-
-            const prodAtt = await updateStatusProd(id);
-
-            return res.status(200).json({
-                  message: "Status Alterado com Sucesso !",
-            });
-      } catch (err) {
-            res.json(400).json({
-                  message: "Erro ao alterar status !",
-            });
-      }
-}
-
-export async function getDashboardController(req: Request, res: Response) {
-      const data = await getDashboard();
-
-      if (!data.totalProdutos || data.totalProdutos == 0) {
-            return res.status(200).json({
-                  message: "Nenhum produto encontrado !",
-            });
-      }
-
-      return res.status(200).json({
-            data: data,
-      });
 }
 
 export async function findProdutoByIdController(req: Request, res: Response) {
@@ -178,5 +127,201 @@ export async function findProdBaixoEstoqueController(
 
       return res.status(200).json({
             prodEstoqueMin: sanitazedData,
+      });
+}
+
+export async function findByNameController(req: Request, res: Response) {
+      try {
+            const { name } = req.query;
+            if (typeof name !== "string" || name.trim() === "") {
+                  return res.status(400).json({
+                        message: "Nome Inválido !",
+                  });
+            }
+            const data = await findByName(name);
+
+            if (data.length === 0) {
+                  return res.status(404).json({
+                        message: "Nenhum item com este nome encontrado !",
+                  });
+            }
+
+            res.status(200).json({
+                  produtos: data,
+            });
+      } catch (err) {
+            res.status(500).json({
+                  message: "Erro interno do servidor !",
+            });
+      }
+}
+
+// COMMANDS
+export async function postProdutosController(req: Request, res: Response) {
+      try {
+            const { name, price, quantidade, userId } = req.body;
+
+            if (!name || !price || !quantidade || !userId) {
+                  return res
+                        .status(400)
+                        .json({ error: "Todos os campos são obrigatórios !" });
+            }
+
+            const produto = await cadastraProd(name, price, quantidade, userId);
+
+            return res.status(201).json({
+                  message: "Produto cadastrado com sucesso !",
+                  produto: produto,
+            });
+      } catch (err) {
+            return res.status(400).json({ error: "Erro ao criar produto !" });
+      }
+}
+
+export async function updateStatusProdController(req: Request, res: Response) {
+      try {
+            const { id } = req.params;
+            if (typeof id !== "string" || id.trim() == "") {
+                  return res.status(400).json({
+                        error: "Algum dos dados não foi preenchido corretamente !",
+                  });
+            }
+
+            const prodAtt = await updateStatusProd(id);
+
+            return res.status(200).json({
+                  message: "Status Alterado com Sucesso !",
+            });
+      } catch (err) {
+            res.json(400).json({
+                  message: "Erro ao alterar status !",
+            });
+      }
+}
+
+export async function updateProdController(req: Request, res: Response) {
+      const { id } = req.params;
+      const { name, price, quantidade } = req.body;
+
+      if (typeof id !== "string" || id.trim() === "") {
+            return res.status(400).json({
+                  message: "ID incorreto !",
+            });
+      }
+
+      if (name !== undefined && typeof name !== "string") {
+            return res.status(400).json({
+                  message: "name deve ser string !",
+            });
+      }
+
+      if (price !== undefined && typeof price !== "number") {
+            return res.status(400).json({
+                  message: "price deve ser number !",
+            });
+      }
+
+      if (quantidade !== undefined && typeof quantidade !== "number") {
+            return res.status(400).json({
+                  message: "quantidade deve ser number !",
+            });
+      }
+
+      if (
+            name === undefined &&
+            price === undefined &&
+            quantidade === undefined
+      ) {
+            return res.status(400).json({
+                  message: "Nenhum campo para atualizar !",
+            });
+      }
+
+      const data = await updateProd(id, name, price, quantidade);
+
+      if (!data) {
+            return res.status(404).json({
+                  message: "Produto não encontrado !",
+            });
+      }
+
+      return res.status(200).json({
+            message: "Dados atualizados com sucesso !",
+            data,
+      });
+}
+
+export async function incrementStockController(req: Request, res: Response) {
+      try {
+            const { id } = req.params;
+            const { amount } = req.body;
+
+            if (typeof id !== "string" || !id) {
+                  return res.status(400).json({
+                        message: "ID inválido !",
+                  });
+            }
+
+            if (typeof amount !== "number" || !amount || amount <= 0) {
+                  return res.status(400).json({
+                        message: "Amount inválido !",
+                  });
+            }
+
+            const data = await incrementStock(id, amount);
+
+            return res.status(200).json({
+                  message: "Estoque atualizado !",
+                  data,
+            });
+      } catch (err) {
+            res.status(400).json({
+                  message: "Erro ao incrementar estoque !",
+            });
+      }
+}
+
+export async function decrementStockController(req: Request, res: Response) {
+      try {
+            const { id } = req.params;
+            const { amount } = req.body;
+
+            if (typeof id !== "string" || !id) {
+                  return res.status(400).json({
+                        message: "ID inválido !",
+                  });
+            }
+
+            if (typeof amount !== "number" || !amount || amount <= 0) {
+                  return res.status(400).json({
+                        message: "Amount inválido !",
+                  });
+            }
+
+            const data = await decrementStock(id, amount);
+
+            return res.status(200).json({
+                  message: "Estoque atualizado !",
+                  data,
+            });
+      } catch (err) {
+            return res.status(400).json({
+                  message: "Quantidade Insuficiente !",
+            });
+      }
+}
+
+// DASHBOARD
+export async function getDashboardController(req: Request, res: Response) {
+      const data = await getDashboard();
+
+      if (!data.totalProdutos || data.totalProdutos == 0) {
+            return res.status(200).json({
+                  message: "Nenhum produto encontrado !",
+            });
+      }
+
+      return res.status(200).json({
+            data: data,
       });
 }

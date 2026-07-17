@@ -1,6 +1,8 @@
+import { error } from "node:console";
 import { prisma } from "../../database/prisma";
 import { Prisma } from "../../generated/prisma/client";
 
+// QUERiES
 export async function findAllProdutos() {
       const data = await prisma.produto.findMany();
       return data;
@@ -10,6 +12,19 @@ export async function findProdutoById(id: string) {
       const data = await prisma.produto.findUnique({
             where: {
                   id,
+            },
+      });
+
+      return data;
+}
+
+export async function findByName(name: string) {
+      const data = await prisma.produto.findMany({
+            where: {
+                  name: {
+                        contains: name,
+                        mode: "insensitive",
+                  },
             },
       });
 
@@ -58,16 +73,20 @@ export async function findInactiveProd() {
       return data;
 }
 
-export async function findByName(name: string) {
+export async function findProdBaixoEstoque(min = 5) {
       const data = await prisma.produto.findMany({
             where: {
-                  name: name,
+                  active: true,
+                  quantidade: {
+                        lte: min,
+                  },
             },
       });
 
       return data;
 }
 
+// COMANDS
 export async function cadastraProd(
       name: string,
       price: number | Prisma.Decimal,
@@ -109,6 +128,75 @@ export async function updateStatusProd(id: string) {
       return updatedProd.count > 0;
 }
 
+export async function updateProd(
+      id: string,
+      name?: string,
+      price?: number | Prisma.Decimal,
+      quantidade?: number,
+) {
+      const prod = await prisma.produto.findUnique({
+            where: {
+                  id,
+            },
+      });
+
+      if (!prod) return null;
+
+      const newProd: {
+            name?: string;
+            price?: Prisma.Decimal;
+            quantidade?: number;
+      } = {};
+
+      if (name !== undefined && name !== prod.name) {
+            newProd.name = name;
+      }
+
+      if (price !== undefined) {
+            const newPrice =
+                  price instanceof Prisma.Decimal
+                        ? price
+                        : new Prisma.Decimal(price);
+            if (newPrice.toString() !== prod.price.toString()) {
+                  newProd.price = newPrice;
+            }
+      }
+
+      if (quantidade !== undefined && quantidade !== prod.quantidade) {
+            newProd.quantidade = quantidade;
+      }
+
+      if (Object.keys(newProd).length === 0) {
+            return prod;
+      }
+
+      const AttProd = await prisma.produto.update({
+            where: { id },
+            data: newProd,
+      });
+
+      return AttProd;
+}
+
+export async function incrementStock(id: string, amount: number) {
+      const data = await prisma.produto.update({
+            where: { id },
+            data: { quantidade: { increment: amount } },
+      });
+
+      return data;
+}
+
+export async function decrementStock(id: string, amount: number) {
+      const data = await prisma.produto.update({
+            where: { id, quantidade: { gte: amount } },
+            data: { quantidade: { decrement: amount } },
+      });
+
+      return data;
+}
+
+// DASHBOARD
 export async function getDashboard() {
       const produtos = await prisma.produto.findMany({
             where: {
@@ -125,17 +213,4 @@ export async function getDashboard() {
             totalProdutos: produtos.length,
             valorEstoque,
       };
-}
-
-export async function findProdBaixoEstoque(min = 5) {
-      const data = await prisma.produto.findMany({
-            where: {
-                  active: true,
-                  quantidade: {
-                        lte: min,
-                  },
-            },
-      });
-
-      return data;
 }

@@ -196,6 +196,7 @@ export async function updateStatusProdController(req: Request, res: Response) {
             });
       }
 }
+
 export async function updateProdController(req: Request, res: Response) {
       const { id } = req.params;
       const { name, price, quantidade } = req.body;

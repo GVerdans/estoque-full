@@ -177,6 +177,9 @@ export async function updateProd(
       return AttProd;
 }
 
+// Falta incremento de estoque
+// Falta decremento de estoque
+
 // DASHBOARD
 export async function getDashboard() {
       const produtos = await prisma.produto.findMany({

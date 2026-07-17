@@ -127,6 +127,50 @@ export async function updateStatusProd(id: string) {
       return updatedProd.count > 0;
 }
 
+export async function updateProd(
+      id: string,
+      name: string,
+      price: number | Prisma.Decimal,
+      quantidade: number,
+) {
+      const prod = await prisma.produto.findUnique({
+            where: {
+                  id,
+            },
+      });
+
+      if (!prod) return null;
+
+      const newProd: {
+            name?: string;
+            price?: number | Prisma.Decimal;
+            quantidade?: number;
+      } = {};
+
+      if (name !== prod?.name) {
+            newProd.name = name;
+      }
+
+      if (price.toString() !== prod?.price.toString()) {
+            newProd.price = price;
+      }
+
+      if (quantidade !== prod?.quantidade) {
+            newProd.quantidade = quantidade;
+      }
+
+      if (Object.keys(newProd).length === 0) {
+            return prod;
+      }
+
+      const AttProd = await prisma.produto.update({
+            where: { id },
+            data: newProd,
+      });
+
+      return AttProd;
+}
+
 // DASHBOARD
 export async function getDashboard() {
       const produtos = await prisma.produto.findMany({

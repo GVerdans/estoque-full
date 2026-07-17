@@ -9,6 +9,8 @@ import {
       findProdBaixoEstoque,
       findByName,
       updateProd,
+      incrementStock,
+      decrementStock,
 } from "./produto.service";
 import { Request, Response } from "express";
 
@@ -247,6 +249,66 @@ export async function updateProdController(req: Request, res: Response) {
             message: "Dados atualizados com sucesso !",
             data,
       });
+}
+
+export async function incrementStockController(req: Request, res: Response) {
+      try {
+            const { id } = req.params;
+            const { amount } = req.body;
+
+            if (typeof id !== "string" || !id) {
+                  return res.status(400).json({
+                        message: "ID inválido !",
+                  });
+            }
+
+            if (typeof amount !== "number" || !amount || amount <= 0) {
+                  return res.status(400).json({
+                        message: "Amount inválido !",
+                  });
+            }
+
+            const data = await incrementStock(id, amount);
+
+            return res.status(200).json({
+                  message: "Estoque atualizado !",
+                  data,
+            });
+      } catch (err) {
+            res.status(400).json({
+                  message: "Erro ao incrementar estoque !",
+            });
+      }
+}
+
+export async function decrementStockController(req: Request, res: Response) {
+      try {
+            const { id } = req.params;
+            const { amount } = req.body;
+
+            if (typeof id !== "string" || !id) {
+                  return res.status(400).json({
+                        message: "ID inválido !",
+                  });
+            }
+
+            if (typeof amount !== "number" || !amount || amount <= 0) {
+                  return res.status(400).json({
+                        message: "Amount inválido !",
+                  });
+            }
+
+            const data = await decrementStock(id, amount);
+
+            return res.status(200).json({
+                  message: "Estoque atualizado !",
+                  data,
+            });
+      } catch (err) {
+            return res.status(400).json({
+                  message: "Quantidade Insuficiente !",
+            });
+      }
 }
 
 // DASHBOARD

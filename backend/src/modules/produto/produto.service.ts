@@ -1,3 +1,4 @@
+import { error } from "node:console";
 import { prisma } from "../../database/prisma";
 import { Prisma } from "../../generated/prisma/client";
 
@@ -177,8 +178,23 @@ export async function updateProd(
       return AttProd;
 }
 
-// Falta incremento de estoque
-// Falta decremento de estoque
+export async function incrementStock(id: string, amount: number) {
+      const data = await prisma.produto.update({
+            where: { id },
+            data: { quantidade: { increment: amount } },
+      });
+
+      return data;
+}
+
+export async function decrementStock(id: string, amount: number) {
+      const data = await prisma.produto.update({
+            where: { id, quantidade: { gte: amount } },
+            data: { quantidade: { decrement: amount } },
+      });
+
+      return data;
+}
 
 // DASHBOARD
 export async function getDashboard() {

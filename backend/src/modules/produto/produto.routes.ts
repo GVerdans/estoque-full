@@ -10,6 +10,8 @@ import {
       findProdBaixoEstoqueController,
       findByNameController,
       updateProdController,
+      incrementStockController,
+      decrementStockController,
 } from "./produto.controller";
 
 const router = Router();
@@ -27,7 +29,9 @@ router.get("/:id", findProdutoByIdController);
 router.post("/", postProdutosController);
 
 //PATCH
-router.patch("/:id/update", updateProdController);
+router.patch("/:id", updateProdController);
 router.patch("/:id/status", updateStatusProdController);
+router.patch("/:id/increment", incrementStockController);
+router.patch("/:id/decrement", decrementStockController);
 
 export default router;

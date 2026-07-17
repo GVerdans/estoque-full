@@ -61,7 +61,10 @@ export async function findInactiveProd() {
 export async function findByName(name: string) {
       const data = await prisma.produto.findMany({
             where: {
-                  name: name,
+                  name: {
+                        contains: name,
+                        mode: "insensitive",
+                  },
             },
       });
 

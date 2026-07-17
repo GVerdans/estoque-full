@@ -8,18 +8,24 @@ import {
       findInactiveProdController,
       getDashboardController,
       findProdBaixoEstoqueController,
+      findByNameController,
 } from "./produto.controller";
 
 const router = Router();
 
+// GET
 router.get("/", getProdutosController);
-router.get("/activeprods", findActiveProdController);
-router.get("/inactiveprods", findInactiveProdController);
-router.get("/estoquemin", findProdBaixoEstoqueController);
+router.get("/active", findActiveProdController);
+router.get("/inactive", findInactiveProdController);
+router.get("/low-stock", findProdBaixoEstoqueController);
+router.get("/search", findByNameController);
 router.get("/dashboard", getDashboardController);
 router.get("/:id", findProdutoByIdController);
 
+// POST
 router.post("/", postProdutosController);
+
+//PATCH
 router.patch("/:id/status", updateStatusProdController);
 
 export default router;

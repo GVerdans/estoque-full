@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
-import { findAllUsers } from "./user.service";
+import bcrypt from "bcryptjs";
+import validator from "validator";
+import { findAllUsers, createUser } from "./user.service";
 
 export async function getUsers(req: Request, res: Response) {
       try {
@@ -25,4 +27,38 @@ export async function getUsers(req: Request, res: Response) {
       }
 }
 
-export async function createUserController() {}
+export async function createUserController(req: Request, res: Response) {
+      try {
+            const { name, email, password } = req.body;
+
+            if (
+                  !name ||
+                  name.trim() === "" ||
+                  !email ||
+                  !password ||
+                  password.trim() === ""
+            ) {
+                  return res.status(400).json({
+                        message: "Insira os dados corretamente !",
+                  });
+            }
+
+            if (!validator.isEmail(email)) {
+                  return res.status(400).json({
+                        message: "Insira um email valido !",
+                  });
+            }
+
+            const hash = await bcrypt.hash(password, 10);
+            const data = await createUser(name, email, hash);
+
+            return res.status(201).json({
+                  message: "Usuário criado !",
+                  data,
+            });
+      } catch (err) {
+            return res.status(400).json({
+                  message: String(err),
+            });
+      }
+}

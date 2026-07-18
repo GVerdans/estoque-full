@@ -55,7 +55,10 @@ export async function createUserController(req: Request, res: Response) {
 
             return res.status(201).json({
                   message: "Usuário criado !",
-                  data,
+                  data: {
+                        user: data.name,
+                        email: data.email,
+                  },
             });
       } catch (err) {
             return res.status(400).json({

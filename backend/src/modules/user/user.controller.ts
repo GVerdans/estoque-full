@@ -36,7 +36,8 @@ export async function createUserController(req: Request, res: Response) {
                   name.trim() === "" ||
                   !email ||
                   !password ||
-                  password.trim() === ""
+                  password.trim() === "" ||
+                  password.length < 6
             ) {
                   return res.status(400).json({
                         message: "Insira os dados corretamente !",

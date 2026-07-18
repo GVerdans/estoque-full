@@ -24,3 +24,5 @@ export async function getUsers(req: Request, res: Response) {
             });
       }
 }
+
+export async function createUserController() {}

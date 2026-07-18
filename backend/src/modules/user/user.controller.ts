@@ -17,11 +17,11 @@ export async function getUsers(req: Request, res: Response) {
                   email: user.email,
             }));
 
-            res.status(200).json({
+            return res.status(200).json({
                   usuarios: sanitazedUsers,
             });
       } catch (err) {
-            res.status(500).json({
+            return res.status(500).json({
                   err: "Erro ao buscar usuarios ",
             });
       }
@@ -82,30 +82,26 @@ export async function loginController(req: Request, res: Response) {
                   });
             }
 
-            const data = await login(email);
-
-            if (!data) {
-                  return res.status(401).json({
-                        message: "Email ou senha inválidos !",
-                  });
-            }
-
-            const isValidPswd = await bcrypt.compare(password, data.password);
-
-            if (!isValidPswd) {
-                  return res.status(401).json({
-                        message: "Email ou senha inválidos !",
-                  });
-            }
+            const { token, user } = await login(email, password);
 
             return res.status(200).json({
                   message: "Login efetuado com sucesso !",
+                  token,
                   user: {
-                        name: data.name,
-                        email: data.email,
+                        name: user.name,
+                        email: user.email,
                   },
             });
       } catch (err) {
+            if (
+                  err instanceof Error &&
+                  err.message === "CREDENCIAIS INVALIDAS"
+            ) {
+                  return res.status(401).json({
+                        message: "Email ou senha inválidos !",
+                  });
+            }
+
             return res.status(400).json({
                   message: String(err),
             });

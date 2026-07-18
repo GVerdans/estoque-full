@@ -67,6 +67,7 @@ export async function createUserController(req: Request, res: Response) {
       }
 }
 
+//  FALTA O JWT
 export async function loginController(req: Request, res: Response) {
       try {
             const { email, password } = req.body;
@@ -81,7 +82,7 @@ export async function loginController(req: Request, res: Response) {
                   });
             }
 
-            const data = await login(email, password);
+            const data = await login(email);
 
             if (!data) {
                   return res.status(401).json({

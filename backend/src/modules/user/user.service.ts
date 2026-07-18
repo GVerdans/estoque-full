@@ -19,3 +19,18 @@ export async function createUser(
 
       return data;
 }
+
+export async function login(email: string, hash: string) {
+      try {
+            const data = await prisma.user.findUnique({
+                  where: {
+                        email: email,
+                        password: hash,
+                  },
+            });
+
+            return data;
+      } catch (err) {
+            throw new Error("Erro ao fazer Login !");
+      }
+}

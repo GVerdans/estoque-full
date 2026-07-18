@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import validator from "validator";
-import { findAllUsers, createUser } from "./user.service";
+import { findAllUsers, createUser, login } from "./user.service";
 
 export async function getUsers(req: Request, res: Response) {
       try {
@@ -57,6 +57,50 @@ export async function createUserController(req: Request, res: Response) {
                   message: "Usuário criado !",
                   data: {
                         user: data.name,
+                        email: data.email,
+                  },
+            });
+      } catch (err) {
+            return res.status(400).json({
+                  message: String(err),
+            });
+      }
+}
+
+export async function loginController(req: Request, res: Response) {
+      try {
+            const { email, password } = req.body;
+            if (
+                  !email ||
+                  !validator.isEmail(email) ||
+                  !password ||
+                  password.trim() === ""
+            ) {
+                  return res.status(400).json({
+                        message: "Dados inválidos !",
+                  });
+            }
+
+            const data = await login(email, password);
+
+            if (!data) {
+                  return res.status(401).json({
+                        message: "Email ou senha inválidos !",
+                  });
+            }
+
+            const isValidPswd = await bcrypt.compare(password, data.password);
+
+            if (!isValidPswd) {
+                  return res.status(401).json({
+                        message: "Email ou senha inválidos !",
+                  });
+            }
+
+            return res.status(200).json({
+                  message: "Login efetuado com sucesso !",
+                  user: {
+                        name: data.name,
                         email: data.email,
                   },
             });

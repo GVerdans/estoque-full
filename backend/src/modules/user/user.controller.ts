@@ -1,13 +1,7 @@
 import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import validator from "validator";
-import {
-      findAllUsers,
-      createUser,
-      login,
-      changePassword,
-} from "./user.service";
-import { emitWarning } from "node:process";
+import { findAllUsers, createUser } from "./user.service";
 
 export async function getUsers(req: Request, res: Response) {
       try {
@@ -69,75 +63,6 @@ export async function createUserController(req: Request, res: Response) {
             });
       } catch (err) {
             return res.status(400).json({
-                  message: String(err),
-            });
-      }
-}
-
-export async function loginController(req: Request, res: Response) {
-      try {
-            const { email, password } = req.body;
-            if (
-                  !email ||
-                  !validator.isEmail(email) ||
-                  !password ||
-                  password.trim() === ""
-            ) {
-                  return res.status(400).json({
-                        message: "Dados inválidos !",
-                  });
-            }
-
-            const { token, user } = await login(email, password);
-
-            return res.status(200).json({
-                  message: "Login efetuado com sucesso !",
-                  token,
-                  user: {
-                        name: user.name,
-                        email: user.email,
-                  },
-            });
-      } catch (err) {
-            if (
-                  err instanceof Error &&
-                  err.message === "CREDENCIAIS INVALIDAS"
-            ) {
-                  return res.status(401).json({
-                        message: "Email ou senha inválidos !",
-                  });
-            }
-
-            return res.status(400).json({
-                  message: String(err),
-            });
-      }
-}
-
-export async function changePasswordController(req: Request, res: Response) {
-      try {
-            const { id } = req.params;
-            const { newPassword } = req.body;
-
-            if (typeof id !== "string" || !id) {
-                  return res.status(400).json({
-                        message: "ID inválido !",
-                  });
-            }
-            if (typeof newPassword !== "string" || !newPassword) {
-                  return res.status(400).json({
-                        message: "Senha inválida !",
-                  });
-            }
-
-            const data = await changePassword(id, newPassword);
-
-            return res.status(200).json({
-                  message: "Senha alterada com Sucesso !",
-                  name: data.name,
-            });
-      } catch (err) {
-            return res.status(500).json({
                   message: String(err),
             });
       }

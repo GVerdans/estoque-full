@@ -1,7 +1,13 @@
 import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import validator from "validator";
-import { findAllUsers, createUser, login } from "./user.service";
+import {
+      findAllUsers,
+      createUser,
+      login,
+      changePassword,
+} from "./user.service";
+import { emitWarning } from "node:process";
 
 export async function getUsers(req: Request, res: Response) {
       try {
@@ -13,6 +19,7 @@ export async function getUsers(req: Request, res: Response) {
             }
 
             const sanitazedUsers = users.map((user) => ({
+                  id: user.id,
                   nome: user.name,
                   email: user.email,
             }));
@@ -67,7 +74,6 @@ export async function createUserController(req: Request, res: Response) {
       }
 }
 
-//  FALTA O JWT
 export async function loginController(req: Request, res: Response) {
       try {
             const { email, password } = req.body;
@@ -103,6 +109,35 @@ export async function loginController(req: Request, res: Response) {
             }
 
             return res.status(400).json({
+                  message: String(err),
+            });
+      }
+}
+
+export async function changePasswordController(req: Request, res: Response) {
+      try {
+            const { id } = req.params;
+            const { newPassword } = req.body;
+
+            if (typeof id !== "string" || !id) {
+                  return res.status(400).json({
+                        message: "ID inválido !",
+                  });
+            }
+            if (typeof newPassword !== "string" || !newPassword) {
+                  return res.status(400).json({
+                        message: "Senha inválida !",
+                  });
+            }
+
+            const data = await changePassword(id, newPassword);
+
+            return res.status(200).json({
+                  message: "Senha alterada com Sucesso !",
+                  name: data.name,
+            });
+      } catch (err) {
+            return res.status(500).json({
                   message: String(err),
             });
       }

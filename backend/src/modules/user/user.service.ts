@@ -50,3 +50,26 @@ export async function login(email: string, password: string) {
 
       return { token, user };
 }
+
+export async function changePassword(id: string, password: string) {
+      if (password.length < 6) {
+            throw new Error("Senha deve possuir o mínimo de 6 caracteres !");
+      }
+
+      const newPassword = await bcrypt.hash(password, 10);
+
+      try {
+            const data = prisma.user.update({
+                  where: {
+                        id: id,
+                  },
+                  data: {
+                        password: newPassword,
+                  },
+            });
+
+            return data;
+      } catch (err) {
+            throw new Error("USUARIO NAO ENCONTRADO !");
+      }
+}

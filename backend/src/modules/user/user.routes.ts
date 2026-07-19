@@ -3,6 +3,7 @@ import {
       getUsers,
       createUserController,
       loginController,
+      changePasswordController,
 } from "./user.controller";
 
 const router = Router();
@@ -13,4 +14,7 @@ router.get("/", getUsers);
 // POST
 router.post("/", createUserController);
 router.post("/login", loginController);
+
+// PATCH
+router.patch("/:id/change-password", changePasswordController);
 export default router;

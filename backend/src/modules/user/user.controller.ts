@@ -56,14 +56,16 @@ export async function createUserController(req: Request, res: Response) {
 
             return res.status(201).json({
                   message: "Usuário criado !",
-                  data: {
-                        user: data.name,
-                        email: data.email,
-                  },
+                  data: { user: data.name, email: data.email },
             });
       } catch (err) {
-            return res.status(400).json({
-                  message: String(err),
+            if (err instanceof Error && err.message === "EMAIL_JA_CADASTRADO") {
+                  return res.status(409).json({
+                        message: "Email já cadastrado !",
+                  });
+            }
+            return res.status(500).json({
+                  message: "Erro interno !",
             });
       }
 }

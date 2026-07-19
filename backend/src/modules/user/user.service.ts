@@ -1,4 +1,5 @@
 import { prisma } from "../../database/prisma";
+import { Prisma } from "../../generated/prisma/client";
 
 export async function findAllUsers() {
       return await prisma.user.findMany();
@@ -9,13 +10,23 @@ export async function createUser(
       email: string,
       password: string,
 ) {
-      const data = await prisma.user.create({
-            data: {
-                  name: name,
-                  email: email,
-                  password: password,
-            },
-      });
+      try {
+            const data = await prisma.user.create({
+                  data: {
+                        name: name,
+                        email: email,
+                        password: password,
+                  },
+            });
 
-      return data;
+            return data;
+      } catch (err) {
+            if (
+                  err instanceof Prisma.PrismaClientKnownRequestError &&
+                  err.code === "P2002"
+            ) {
+                  throw new Error("EMAIL_JA_CADASTRADO");
+            }
+            throw err;
+      }
 }

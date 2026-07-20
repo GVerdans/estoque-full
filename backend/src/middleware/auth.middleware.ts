@@ -1,5 +1,5 @@
 import { Response, NextFunction } from "express";
-import JWT, { TokenExpiredError, JsonWebTokenError } from "jsonwebtoken";
+import JWT from "jsonwebtoken";
 import { AuthRequest } from "../types/auth.types";
 
 export function authMiddleware(
@@ -19,12 +19,12 @@ export function authMiddleware(
             req.user = decoded;
             next();
       } catch (err) {
-            if (err instanceof TokenExpiredError) {
+            if (err instanceof JWT.TokenExpiredError) {
                   return res.status(401).json({
                         message: "Token expirado, faça login novamente !",
                   });
             }
-            if (err instanceof JsonWebTokenError) {
+            if (err instanceof JWT.JsonWebTokenError) {
                   return res.status(401).json({ message: "Token inválido !" });
             }
             return res.status(500).json({ message: "Erro interno" });

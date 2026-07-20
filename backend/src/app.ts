@@ -7,7 +7,7 @@ const app: Express = express();
 // Mudar quando for pra prod
 app.use(
       cors({
-            origin: "http://localhost:5173",
+            origin: process.env.FRONTEND_URL,
             credentials: true,
       }),
 );

@@ -1,4 +1,4 @@
-export default function authPage() {
+export default function AuthPage() {
       return (
             <>
                   <h1>Login</h1>

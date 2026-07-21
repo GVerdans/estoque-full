@@ -2,6 +2,7 @@ import { useState } from "react";
 import Button from "../../../../components/Button/Button";
 import Input from "../../../../components/inputs/Input";
 import { loginService } from "../../auth.service";
+import { Link } from "react-router-dom";
 // import { useNavigate } from "react-router-dom";
 
 export default function LoginForm() {
@@ -55,12 +56,18 @@ export default function LoginForm() {
                                                 {err}
                                           </div>
                                     )}
-                                    <div className="flex flex-row justify-between items-end py-2">
+                                    <div className="flex flex-col justify-center items-center py-4 md:flex-row md:items-center md:justify-between">
                                           <Button type="submit">Entrar</Button>
-                                          <div className="registre-se">
+                                          <div className="registre-se text-center py-5">
                                                 <p className="text-sm">
                                                       Nao possui uma conta ?
-                                                      Registre-se aqui !
+                                                      <Link to={"/register"}>
+                                                            {" "}
+                                                            <span className="hover:text-accent">
+                                                                  Registre-se
+                                                                  aqui !
+                                                            </span>
+                                                      </Link>
                                                 </p>
                                           </div>
                                     </div>

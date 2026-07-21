@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Button from "../../../../components/Button/Button";
 import Input from "../../../../components/inputs/Input";
-import { loginService } from "../../auth.service";
+import { loginService } from "../../login.service";
 import { Link } from "react-router-dom";
 // import { useNavigate } from "react-router-dom";
 

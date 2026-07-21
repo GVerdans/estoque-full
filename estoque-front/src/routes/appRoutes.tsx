@@ -1,10 +1,14 @@
 import { Route, Routes } from "react-router-dom";
-import AuthPage from "../modules/auth/auth.page";
+import AuthPage from "../modules/auth/pages/Login";
 
 const AppRouter = [
       {
             path: "/",
             element: <AuthPage />,
+      },
+      {
+            path: "/register",
+            element: "",
       },
 ];
 

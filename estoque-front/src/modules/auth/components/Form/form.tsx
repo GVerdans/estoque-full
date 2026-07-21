@@ -1,14 +1,30 @@
 import { useState } from "react";
 import Button from "../../../../components/Button/Button";
 import Input from "../../../../components/inputs/Input";
+import { loginService } from "../../auth.service";
+// import { useNavigate } from "react-router-dom";
 
 export default function LoginForm() {
       const [email, setEmail] = useState("");
       const [password, setPassword] = useState("");
+      const [err, setErr] = useState<string | null>(null);
 
-      function handleSubmit(el: React.FormEvent<HTMLFormElement>) {
+      // const navigate = useNavigate();
+
+      async function handleSubmit(el: React.FormEvent<HTMLFormElement>) {
             el.preventDefault();
-            // service aqui ...
+            setErr(null);
+            try {
+                  const data = await loginService(email, password);
+                  localStorage.setItem("token", data.token);
+                  // navigate();
+            } catch (err) {
+                  setErr(
+                        err instanceof Error
+                              ? err.message
+                              : "Erro ao fazer login !",
+                  );
+            }
       }
 
       return (
@@ -34,6 +50,11 @@ export default function LoginForm() {
                                                 setPassword(el.target.value)
                                           }
                                     />
+                                    {err && (
+                                          <div className="text-sm text-red-500">
+                                                {err}
+                                          </div>
+                                    )}
                                     <div className="flex flex-row justify-between items-end py-2">
                                           <Button type="submit">Entrar</Button>
                                           <div className="registre-se">

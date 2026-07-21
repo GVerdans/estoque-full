@@ -1,11 +1,10 @@
 import LoginForm from "../components/Form/LoginForm";
+import Header from "../../../components/Header/Header";
 
-export default function AuthPage() {
+export default function LoginPage() {
       return (
             <>
-                  <div className="text-center">
-                        <h1 className="text-3xl text-text my-5">Login</h1>
-                  </div>
+                  <Header texto="Login" />
                   <LoginForm />
             </>
       );

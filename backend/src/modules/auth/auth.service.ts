@@ -1,4 +1,5 @@
 import { prisma } from "../../database/prisma";
+import { Prisma } from "../../generated/prisma/client";
 import JWT from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
@@ -29,6 +30,32 @@ export async function login(email: string, password: string) {
       );
 
       return { token, user };
+}
+
+export async function createUser(
+      name: string,
+      email: string,
+      password: string,
+) {
+      try {
+            const data = await prisma.user.create({
+                  data: {
+                        name: name,
+                        email: email,
+                        password: password,
+                  },
+            });
+
+            return data;
+      } catch (err) {
+            if (
+                  err instanceof Prisma.PrismaClientKnownRequestError &&
+                  err.code === "P2002"
+            ) {
+                  throw new Error("EMAIL_JA_CADASTRADO");
+            }
+            throw err;
+      }
 }
 
 export async function changePassword(id: string, password: string) {

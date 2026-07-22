@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import LoginPage from "../modules/auth/pages/Login";
 import RegisterPage from "../modules/auth/pages/Register";
+import WelcomePage from "../modules/user/pages/Welcome";
 
 const AppRouter = [
       {
@@ -10,6 +11,10 @@ const AppRouter = [
       {
             path: "/register",
             element: <RegisterPage />,
+      },
+      {
+            path: "/welcome",
+            element: <WelcomePage />,
       },
 ];
 

@@ -3,14 +3,14 @@ import Button from "../../../../components/Button/Button";
 import Input from "../../../../components/inputs/Input";
 import { loginService } from "../../auth.service";
 import { Link } from "react-router-dom";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginForm() {
       const [email, setEmail] = useState("");
       const [password, setPassword] = useState("");
       const [err, setErr] = useState<string | null>(null);
 
-      // const navigate = useNavigate();
+      const navigate = useNavigate();
 
       async function handleSubmit(el: React.FormEvent<HTMLFormElement>) {
             el.preventDefault();
@@ -18,7 +18,7 @@ export default function LoginForm() {
             try {
                   const data = await loginService(email, password);
                   localStorage.setItem("token", data.token);
-                  // navigate();
+                  navigate("/welcome");
             } catch (err) {
                   setErr(
                         err instanceof Error

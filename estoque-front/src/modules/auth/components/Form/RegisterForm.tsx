@@ -15,11 +15,14 @@ export default function RegisterForm() {
 
       async function handleSubmit(el: React.SubmitEvent) {
             el.preventDefault();
+            if (!name || !email || !password) {
+                  setErr("Preencha todos os campos");
+                  return;
+            }
+
             try {
-                  const data = await registerService(name, email, password);
-                  if (data) {
-                        navigate("/");
-                  }
+                  await registerService(name, email, password);
+                  navigate("/");
             } catch (err) {
                   setErr(
                         err instanceof Error

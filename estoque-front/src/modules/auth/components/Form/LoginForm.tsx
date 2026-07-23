@@ -18,7 +18,7 @@ export default function LoginForm() {
             try {
                   const data = await loginService(email, password);
                   localStorage.setItem("token", data.token);
-                  navigate("/welcome");
+                  navigate("/dashboard");
             } catch (err) {
                   setErr(
                         err instanceof Error

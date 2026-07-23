@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import LoginPage from "../modules/auth/pages/Login";
 import RegisterPage from "../modules/auth/pages/Register";
-import WelcomePage from "../modules/user/pages/Welcome";
+import DashBoardPage from "../Pages/Dashboard";
 
 const AppRouter = [
       {
@@ -13,8 +13,8 @@ const AppRouter = [
             element: <RegisterPage />,
       },
       {
-            path: "/welcome",
-            element: <WelcomePage />,
+            path: "/dashboard",
+            element: <DashBoardPage />,
       },
 ];
 

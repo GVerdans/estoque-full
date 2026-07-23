@@ -1,16 +1,17 @@
-import { jwtDecode, type JwtPayload } from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import { createContext, useContext, useState } from "react";
 import type { ReactNode } from "react";
+import type { JwtUser } from "../types/auth.types";
 
 interface AuthContextType {
-      user: JwtPayload | null;
+      user: JwtUser | null;
       login: (token: string) => void;
       logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-function getUserFromToken(): JwtPayload | null {
+function getUserFromToken(): JwtUser | null {
       const token = localStorage.getItem("token");
       if (!token) return null;
 
@@ -22,11 +23,11 @@ function getUserFromToken(): JwtPayload | null {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-      const [user, setUser] = useState<JwtPayload | null>(getUserFromToken);
+      const [user, setUser] = useState<JwtUser | null>(getUserFromToken);
 
       function login(token: string) {
             localStorage.setItem("token", token);
-            const decoded = jwtDecode(token);
+            const decoded = jwtDecode<JwtUser>(token);
             setUser(decoded);
       }
 

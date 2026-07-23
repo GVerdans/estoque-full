@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import Header from "../components/Header/Header";
 import { getDashBoard } from "../modules/Produtos/produtos.service";
 import { type DashboardType } from "../types/produto.types";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function DashBoardPage() {
+      const { user } = useAuth();
       const [dashboard, setDashboard] = useState<DashboardType | null>(null);
       const [loading, setLoading] = useState(true);
       const [error, setError] = useState<string | null>(null);
@@ -30,7 +32,7 @@ export default function DashBoardPage() {
 
       return (
             <>
-                  <Header texto={`Bem-Vindo, nome !`} />
+                  <Header texto={`Bem-Vindo, ${user?.user} !`} />
                   <div className="flex flex-col border rounded-2xl shadow-sm p-6 my-10 items-center">
                         <div className="w-full md:w-2/3 lg:w-1/2">
                               <p className="text-center border-b pb-3 mb-6 text-accent font-medium">

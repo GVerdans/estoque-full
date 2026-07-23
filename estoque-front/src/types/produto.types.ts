@@ -3,6 +3,11 @@ export interface ProdutoType {
       nome: string;
       quantidade: number;
       preco: number;
+      ativo: boolean;
+}
+
+export interface ProdutoResponse {
+      produtos: ProdutoType[];
 }
 
 export interface DashboardType {

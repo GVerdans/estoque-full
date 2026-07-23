@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import LoginPage from "../modules/auth/pages/Login";
 import RegisterPage from "../modules/auth/pages/Register";
 import DashBoardPage from "../Pages/Dashboard";
+import ProdutosPage from "../modules/Produtos/pages/ProdutosPage";
 import PrivateRoute from "./PrivateRoute";
 
 const AppRouter = [
@@ -18,6 +19,11 @@ const AppRouter = [
       {
             path: "/dashboard",
             element: <DashBoardPage />,
+            private: true,
+      },
+      {
+            path: "/produtos",
+            element: <ProdutosPage />,
             private: true,
       },
 ];

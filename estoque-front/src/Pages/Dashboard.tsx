@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "../components/Header/Header";
 import { getDashBoard } from "../modules/Produtos/produtos.service";
 import { type DashboardType } from "../types/produto.types";
 import { useAuth } from "../contexts/AuthContext";
+import Button from "../components/Button/Button";
 
 export default function DashBoardPage() {
       const { user } = useAuth();
+      const navigate = useNavigate();
       const [dashboard, setDashboard] = useState<DashboardType | null>(null);
       const [loading, setLoading] = useState(true);
       const [error, setError] = useState<string | null>(null);
@@ -75,6 +78,14 @@ export default function DashBoardPage() {
                                     </div>
                               )}
                         </div>
+                  </div>
+                  <div className="flex items-center justify-center">
+                        <Button
+                              variant="secondary"
+                              onClick={() => navigate("/produtos")}
+                        >
+                              Produtos
+                        </Button>
                   </div>
             </>
       );

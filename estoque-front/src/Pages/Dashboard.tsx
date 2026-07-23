@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Header from "../components/Header/Header";
 import { getDashBoard } from "../modules/Produtos/produtos.service";
-import { type DashboardType } from "../modules/Produtos/types/produto.types";
+import { type DashboardType } from "../types/produto.types";
 
 export default function DashBoardPage() {
       const [dashboard, setDashboard] = useState<DashboardType | null>(null);

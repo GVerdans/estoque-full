@@ -4,8 +4,10 @@ import Input from "../../../../components/inputs/Input";
 import { loginService } from "../../auth.service";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../../contexts/AuthContext";
 
 export default function LoginForm() {
+      const { login } = useAuth();
       const [email, setEmail] = useState("");
       const [password, setPassword] = useState("");
       const [err, setErr] = useState<string | null>(null);
@@ -17,7 +19,7 @@ export default function LoginForm() {
             setErr(null);
             try {
                   const data = await loginService(email, password);
-                  localStorage.setItem("token", data.token);
+                  login(data.token);
                   navigate("/dashboard");
             } catch (err) {
                   setErr(

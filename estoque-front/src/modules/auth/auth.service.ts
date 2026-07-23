@@ -1,18 +1,5 @@
 import { request } from "../../service/api";
-
-export interface LoginResponse {
-      message: string;
-      token: string;
-      user: {
-            name: string;
-            email: string;
-      };
-}
-
-export interface RegisterResponse {
-      message: string;
-      data: { user: string; email: string };
-}
+import type { LoginResponse, RegisterResponse } from "../../types/auth.types";
 
 export async function loginService(
       email: string,
